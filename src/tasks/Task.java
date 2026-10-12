@@ -1,26 +1,28 @@
 package tracker.src.tasks;
 
 public class Task {
+
+  public enum Status { NEW, IN_PROGRESS, DONE };
   
-  private static long nextId = 0L;
-  private long id = 0;
+  private static int nextId = 0;
+  private final int id;
 
-  private String name = "";
-  private String desc = "";
-  private String status;
+  private final String name;
+  private final String desc;
+  private Status status;
 
-  public Task(String name, String desc) {
+  public Task(String name, String desc, Status status) {
     id = nextId++;
     this.name = name;
     this.desc = desc;
-    this.status = "NEW";
+    this.status = status;
   }
 
-  public long getId() { return id; }
+  public int getId() { return id; }
   public String getName() { return name; }
   public String getDesc() { return desc; }
-  public String getStatus() { return status; }
-  public void setStatus(String status) { this.status = status; }
+  public Status getStatus() { return status; }
+  protected void setStatus(Status status) { this.status = status; }
 
   @Override 
   public String toString() {
