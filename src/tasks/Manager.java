@@ -5,12 +5,17 @@ import tracker.src.tasks.Task.Status;
 
 public class Manager {
 
-  private HashMap<Integer, Task> tasks = new HashMap<>();
+  private final HashMap<Integer, Task> tasks = new HashMap<>();
+  private final HashMap<Integer, Epic> epics = new HashMap<>();
+  private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-  public void addTask(Task task) { tasks.put(task.getId(), task); }
+  public void addTask(Task task) {
+     tasks.put(task.getId(), task);
+  }
 
-  //public void addTask(Epic epic) { tasks.put(epic.getId(), epic); }
-
+  private void addTask(Epic epic) { tasks.put(epic.getId(), epic); }
+  private void addTask(Subtask subtask) { subtasks.put(subtask.getId(), subtask); }
+  
   private void updateEpic(Epic epic) {
     int done_counter = 0;
     int new_counter = 0;
