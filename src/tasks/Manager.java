@@ -110,6 +110,7 @@ public class Manager {
         case 2:
           epics.clear();
           System.out.println("Список эпиков очищен");
+          break;
         case 3:
           subtasks.clear();
           if (!epics.isEmpty()) {
@@ -117,12 +118,10 @@ public class Manager {
               epic.getSubtasks().clear();
             }
           }
+          System.err.println("Список подзадач очищен");
+          break;
       }
       
-      tasks.clear();
-      epics.clear();
-      subtasks.clear();
-      System.out.println("Список задач очищен");
     } else {
       System.out.println("Отмена");
     }

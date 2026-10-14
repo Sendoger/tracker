@@ -28,9 +28,11 @@ public class Main {
     manager.updateTask(subtask3, Task.Status.DONE);
     System.err.println(manager.getEpicSubtasks(epic2.getId()));
     manager.updateTask(task2, Task.Status.IN_PROGRESS);
-    System.out.println(manager.getEpics());
+    System.out.println("\n" + manager.getEpics() + "\n");
     manager.removeTaskById(task1.getId());
     manager.removeTaskById(epic1.getId());
+    manager.printAll();
+    manager.clearTasks(0);
     manager.printAll();
 
   }
