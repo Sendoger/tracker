@@ -3,32 +3,35 @@ import tracker.src.tasks.*;
 
 public class Main {
   public static void main(String[] args) {
-    Task task = new Task("Здоровье" , "че делать", Task.Status.NEW);
-    Subtask subtask = new Subtask("отжимання", "вниз вверх", Task.Status.NEW);
-    Subtask finishedSubtask = new Subtask("помогите", "какой ужас", Task.Status.DONE);
-    Task finishedTask = new Task("Успех", "надо добиться", Task.Status.NEW);
-    //finishedTask.setStatus("DONE");
+    Task task1 = new Task("Здоровье" , "че делать");
+    Subtask subtask1 = new Subtask("отжимання", "вниз вверх");
+    Subtask subtask2 = new Subtask("помогите", "какой ужас");
+    Subtask subtask3 = new Subtask("пип", "яу");
+    Task task2 = new Task("Успех", "надо добиться");
 
-    Epic epic = new Epic("вроде работает", "с божьей помощью");
-    System.out.println(task.getStatus());
-    System.out.println(subtask.getStatus());
-    //epic.setStatus("IN_PROGRESS");
-    System.out.println(epic.getStatus());
-    System.out.println(epic.getId());
+    Epic epic1 = new Epic("вроде работает", "с божьей помощью");
+    Epic epic2 = new Epic("второй эпик", "text");
+    
 
     Manager manager = new Manager();
-    manager.addTask(task);
-    manager.addTask(subtask);
-    manager.addTask(finishedSubtask);
-    manager.addTask(finishedTask);
-    manager.addTask(epic);
-    System.out.println("Статус эпика до добавления subtask с статусом " + subtask.getStatus() + ": " + epic.getStatus());
-    manager.addSubtask(epic.getId(), subtask);
-    System.out.println("Статус эпика после добавления subtask: " + epic.getStatus());
-    System.out.println("Статус эпика до добавления subtask с статусом " + finishedSubtask.getStatus() + ": " + epic.getStatus());
-    manager.addSubtask(epic.getId(), finishedSubtask);
-    System.out.println("Статус эпика после добавления subtask: " + epic.getStatus());
-    manager.clearTasks();
+    System.out.println("\n\n\n\n\n");
+    manager.addTask(task1);
+    manager.addTask(task2);
+    manager.addEpic(epic1);
+    manager.addEpic(epic2);
+    manager.addSubtask(epic1.getId(), subtask1);
+    manager.addSubtask(epic1.getId(), subtask2);
+    manager.addSubtask(epic2.getId(), subtask3);
+    manager.printAll();
+    manager.updateTask(subtask2, Task.Status.DONE);
+    manager.updateTask(subtask1, Task.Status.IN_PROGRESS);
+    manager.updateTask(subtask3, Task.Status.DONE);
+    System.err.println(manager.getEpicSubtasks(epic2.getId()));
+    manager.updateTask(task2, Task.Status.IN_PROGRESS);
+    System.out.println(manager.getEpics());
+    manager.removeTaskById(task1.getId());
+    manager.removeTaskById(epic1.getId());
+    manager.printAll();
 
   }
 }

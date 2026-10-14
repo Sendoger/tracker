@@ -11,11 +11,11 @@ public class Task {
   private final String desc;
   private Status status;
 
-  public Task(String name, String desc, Status status) {
+  public Task(String name, String desc) {
     id = nextId++;
     this.name = name;
     this.desc = desc;
-    this.status = status;
+    this.status = Status.NEW;
   }
 
   public int getId() { return id; }
@@ -26,7 +26,7 @@ public class Task {
 
   @Override 
   public String toString() {
-    return String.format("Задача: %s, id: %d, описание: %s", getName(), getId(), getDesc());
+    return String.format("Задача: %s, id: %d, описание: %s, статус: %s", getName(), getId(), getDesc(), getStatus());
   }
   
 }
