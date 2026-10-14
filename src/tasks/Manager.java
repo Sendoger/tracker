@@ -91,40 +91,42 @@ public class Manager {
   }
 
   public void clearTasks(int option) {
-    Scanner reader = new Scanner(System.in);
-    System.out.println("Вы уверены, что хотите очистить задачи? (Y/n)");
-    String answer = reader.next();
-
-    if (answer.equals("Y") || answer.equals("y")) {
-      switch (option) {
-        case 0:
-          tasks.clear();
-          epics.clear();
-          subtasks.clear();
-          System.out.println("Список всех задач очищен");
-          break;
-        case 1:
-          tasks.clear();
-          System.out.println("Список задач очищен");
-          break;
-        case 2:
-          epics.clear();
-          System.out.println("Список эпиков очищен");
-          break;
-        case 3:
-          subtasks.clear();
-          if (!epics.isEmpty()) {
-            for (Epic epic : epics.values()) {
-              epic.getSubtasks().clear();
-            }
-          }
-          System.err.println("Список подзадач очищен");
-          break;
-      }
-      
-    } else {
-      System.out.println("Отмена");
-    }
+      try (Scanner reader = new Scanner(System.in)) {
+          System.out.println("Вы уверены, что хотите очистить задачи? (Y/n)");
+          String answer = reader.next();
+          
+          if (answer.equals("Y") || answer.equals("y")) {
+              switch (option) {
+                  case 0 -> {
+                      tasks.clear();
+                      epics.clear();
+                      subtasks.clear();
+                      System.out.println("Список всех задач очищен");
+                  }
+                  case 1 -> {
+                      tasks.clear();
+                      System.out.println("Список задач очищен");
+                  }
+                  case 2 -> {
+                      epics.clear();
+                      System.out.println("Список эпиков очищен");
+                  }
+                  case 3 -> {
+                      subtasks.clear();
+                      if (!epics.isEmpty()) {
+                          for (Epic epic : epics.values()) {
+                              epic.getSubtasks().clear();
+                          }
+                      }
+                      System.err.println("Список подзадач очищен");
+                  }
+              }
+              
+          } else {
+              System.out.println("Отмена");
+          } 
+        }
+        
   }
 
   public Task getTaskById(int id) {
