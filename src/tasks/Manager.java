@@ -34,6 +34,7 @@ public class Manager {
       } else {
         epics.get(epicId).getSubtasks().add(subtask.getId());
         subtasks.put(subtask.getId(), subtask);
+        updateEpic(epicId);
       }
     } else {
       System.out.println("Подзадача уже присутствует");
@@ -84,6 +85,7 @@ public class Manager {
   public HashMap<Integer, Task> getTasks() { return tasks; }
   public HashMap<Integer, Epic> getEpics() { return epics; }
   public HashMap<Integer, Subtask> getSubtasks() { return subtasks; }
+  
   public void printAll() {
     System.out.println(getTasks());
     System.out.println(getEpics());
@@ -142,6 +144,7 @@ public class Manager {
         subtasks.remove(subtaskId);
       }
       epics.remove(id);
+      updateEpic(id);
     }
     else if (subtasks.containsKey(id)) subtasks.remove(id);
     else {
