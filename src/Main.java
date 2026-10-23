@@ -13,7 +13,7 @@ public class Main {
     Epic epic2 = new Epic("второй эпик", "text");
     
 
-    Manager manager = new Manager();
+    TaskManager manager = new TaskManager();
     System.out.println("\n\n\n\n\n");
     manager.addTask(task1);
     manager.addTask(task2);

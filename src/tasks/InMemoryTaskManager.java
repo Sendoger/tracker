@@ -3,11 +3,18 @@ package tracker.src.tasks;
 import java.util.*;
 import tracker.src.tasks.Task.Status;
 
-public class InMemoryTaskManager implements Manager{
+public class InMemoryTaskManager implements TaskManager{
 
   private final HashMap<Integer, Task> tasks = new HashMap<>();
   private final HashMap<Integer, Epic> epics = new HashMap<>();
   private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+  private final ArrayList<Task> history = new ArrayList<>();
+
+  private void historyAdd(Task task) {
+    history.add(task);
+    if (history.size() > 10) history.remove(0);
+  }
+  public ArrayList<Task> getHistory() { return history; }
 
   @Override
   public void addTask(Task task) {
@@ -138,9 +145,16 @@ public class InMemoryTaskManager implements Manager{
   }
   @Override
   public Task getTaskById(int id) {
-    if (tasks.containsKey(id)) return tasks.get(id);
-    if (epics.containsKey(id)) return epics.get(id);
-    return subtasks.get(id);
+    Task res = null;
+    if (tasks.containsKey(id))  res = tasks.get(id);
+    if (epics.containsKey(id)) res = epics.get(id);
+    if (subtasks.containsKey(id)) res = subtasks.get(id);
+
+    if (res != null) {
+      historyAdd(res);
+    }
+    return res;
+
   }
   @Override
   public void removeTaskById(int id) {
