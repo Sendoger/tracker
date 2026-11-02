@@ -10,18 +10,16 @@ public class Task {
   private final String desc;
   private Status status;
 
-  public Task(int id, String name, String desc) {
-    this.name = name;
-    this.desc = desc;
-    this.status = Status.NEW;
-    this.id = id;
-  }
 
   public Task(int id, String name, String desc, Status status) {
     this.name = name;
     this.desc = desc;
     this.status = status;
     this.id = id;
+  }
+
+  public Task(int id, String name, String desc) {
+    this(id, name, desc, Status.NEW);
   }
 
   public int getId() { return id; }
