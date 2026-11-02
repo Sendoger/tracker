@@ -2,10 +2,15 @@ package tracker.src.tasks;
 
 public class Subtask extends Task {
   private int parentEpicId = -1;
-  public Subtask(String name, String desc) {
-    super(name, desc);
+  public Subtask(int id, int epicId, String name, String desc) {
+    super(id, name, desc);
+    this.parentEpicId = epicId;
   }
-  protected void setParentEpicId(int id) { parentEpicId = id; }
+  public Subtask(int id, int epicId, String name, String desc, Status status) {
+    super(id, name, desc, status);
+    this.parentEpicId = epicId;
+  }
+  
   public int getParentEpicId() { return this.parentEpicId; }
 
   @Override 

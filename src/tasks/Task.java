@@ -4,18 +4,24 @@ public class Task {
 
   public enum Status { NEW, IN_PROGRESS, DONE };
   
-  private static int nextId = 0;
-  private final int id;
+  private int id = -1;
 
   private final String name;
   private final String desc;
   private Status status;
 
-  public Task(String name, String desc) {
-    id = nextId++;
+  public Task(int id, String name, String desc) {
     this.name = name;
     this.desc = desc;
     this.status = Status.NEW;
+    this.id = id;
+  }
+
+  public Task(int id, String name, String desc, Status status) {
+    this.name = name;
+    this.desc = desc;
+    this.status = status;
+    this.id = id;
   }
 
   public int getId() { return id; }
