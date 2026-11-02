@@ -1,6 +1,9 @@
-package tracker.src.tasks;
+package tracker.src.managers;
 
 import java.util.*;
+import tracker.src.tasks.Epic;
+import tracker.src.tasks.Subtask;
+import tracker.src.tasks.Task;
 import tracker.src.tasks.Task.Status;
 
 public class InMemoryTaskManager implements TaskManager{

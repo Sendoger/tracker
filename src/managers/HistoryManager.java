@@ -1,6 +1,8 @@
-package tracker.src.tasks;
+package tracker.src.managers;
 
 import java.util.ArrayList;
+
+import tracker.src.tasks.Task;
 
 public interface HistoryManager {
   public void add(Task task);

@@ -1,5 +1,6 @@
 package tracker.src;
-import tracker.src.tasks.*;
+import tracker.src.managers.Manager;
+import tracker.src.managers.TaskManager;
 
 public class Main {
   public static void main(String[] args) {

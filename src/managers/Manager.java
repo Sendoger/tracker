@@ -1,4 +1,4 @@
-package tracker.src.tasks;
+package tracker.src.managers;
 
 public class Manager {
   private Manager() { }

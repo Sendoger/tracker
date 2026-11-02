@@ -1,6 +1,7 @@
-package tracker.src.tasks;
+package tracker.src.managers;
 
 import java.util.ArrayList;
+import tracker.src.tasks.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
   private final ArrayList<Task> history = new ArrayList<>();

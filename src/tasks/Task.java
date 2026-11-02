@@ -28,7 +28,6 @@ public class Task {
   public String getName() { return name; }
   public String getDesc() { return desc; }
   public Status getStatus() { return status; }
-  protected void setStatus(Status status) { this.status = status; }
 
   @Override 
   public String toString() {
