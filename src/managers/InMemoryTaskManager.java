@@ -21,6 +21,7 @@ public class InMemoryTaskManager implements TaskManager{
   @Override
   public List<Task> historyList() {
     return history.getHistory();
+  
   }
 
   @Override
@@ -30,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager{
     if (!tasks.containsValue(task)) {
       tasks.put(task.getId(), task); 
     } else {
-      System.out.println("Задача уже присутствует");
+      throw new IllegalArgumentException("Задача уже присутствует");
     }
   }
 
@@ -40,24 +41,27 @@ public class InMemoryTaskManager implements TaskManager{
     if (!epics.containsValue(epic)) {
       epics.put(epic.getId(), epic); 
     } else {
-      System.out.println("Эпик уже присутствует");
+      throw new IllegalArgumentException("Эпик уже присутствует");
     }
   }
 
   @Override
   public void addSubtask(int epicId, String name, String desc) {
     Subtask subtask = new Subtask(nextId++, epicId, name, desc);
+    Epic epic = epics.get(epicId);
     if (!subtasks.containsValue(subtask)) {
 
-      if (epics.get(epicId) == null) {
+      if (epic == null) {
         throw new IllegalArgumentException("Эпик с id: " + epicId + " не обнаружен");
       } else {
-        epics.get(epicId).getSubtasks().add(subtask.getId());
-        updateEpic(epicId);
+        epic.getSubtasks().add(subtask.getId());
+        System.out.println("wow");
+        System.out.println(epic.getSubtasks());
         subtasks.put(subtask.getId(), subtask);
+        updateEpic(epicId);
       }
     } else {
-      System.out.println("Подзадача уже присутствует");
+      throw new IllegalArgumentException("Подзадача уже присутствует");
     }
   }
 
@@ -68,6 +72,7 @@ public class InMemoryTaskManager implements TaskManager{
     int new_counter = 0;
     Status status;
     for (Subtask subtask : getEpicSubtasks(epicId)) {
+      
       if (subtask.getStatus() == Status.DONE) {
         done_counter++;
       }
@@ -87,6 +92,10 @@ public class InMemoryTaskManager implements TaskManager{
       status = Status.IN_PROGRESS;
     }
     Epic newEpic = new Epic(epic.getId(), epic.getName(), epic.getDesc(), status);
+    for (int subtaskId : epic.getSubtasks()) {
+      newEpic.getSubtasks().add(subtaskId);
+    }
+    
     epics.put(epic.getId(), newEpic);
   }
 
@@ -96,7 +105,7 @@ public class InMemoryTaskManager implements TaskManager{
     Task newtask = new Task(task.getId(), task.getName(), task.getDesc(), status);
     
     if (tasks.containsKey(task.getId())) tasks.put(task.getId(), newtask);
-    else System.out.println("Задача не найдена");
+    else throw new IllegalArgumentException("Задача не найдена");
   }
 
   @Override
@@ -108,7 +117,7 @@ public class InMemoryTaskManager implements TaskManager{
       subtasks.put(subtask.getId(), newSubtask);
       updateEpic(subtask.getParentEpicId());
     }
-    else System.out.println("Задача не найдена");
+    else throw new IllegalArgumentException("Задача не найдена");
   }
 
   @Override
@@ -173,17 +182,30 @@ public class InMemoryTaskManager implements TaskManager{
   }
   @Override
   public void removeTaskById(int id) {
+    Boolean exists = false;
     if (tasks.containsKey(id)) tasks.remove(id);
     else if (epics.containsKey(id)) {
+      exists = true;
       for (int subtaskId : epics.get(id).getSubtasks()) {
         subtasks.remove(subtaskId);
+        history.remove(subtaskId);
       }
       epics.remove(id);
     }
-    else if (subtasks.containsKey(id)) subtasks.remove(id);
+    else if (subtasks.containsKey(id)) {
+      Epic subtaskEpic = epics.get(subtasks.get(id).getParentEpicId());
+      for (int i = 0; i < subtaskEpic.getSubtasks().size(); i++) {
+        if(i == id) subtaskEpic.getSubtasks().remove(i);
+      }
+      
+      subtasks.remove(id);
+      exists = true;
+    } 
     else {
-      System.out.println("Задача не найдена");
+      throw new IllegalArgumentException("Задача не найдена");
     }
+
+    if (exists) { history.remove(id); }
   }
   @Override
   public ArrayList<Subtask> getEpicSubtasks(int epicId) {
