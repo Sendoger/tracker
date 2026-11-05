@@ -21,7 +21,6 @@ public class InMemoryTaskManager implements TaskManager{
   @Override
   public List<Task> historyList() {
     return history.getHistory();
-  
   }
 
   @Override
@@ -55,7 +54,7 @@ public class InMemoryTaskManager implements TaskManager{
         throw new IllegalArgumentException("Эпик с id: " + epicId + " не обнаружен");
       } else {
         epic.getSubtasks().add(subtask.getId());
-        System.out.println("wow");
+    
         System.out.println(epic.getSubtasks());
         subtasks.put(subtask.getId(), subtask);
         updateEpic(epicId);
@@ -192,10 +191,12 @@ public class InMemoryTaskManager implements TaskManager{
       }
       epics.remove(id);
     }
+
     else if (subtasks.containsKey(id)) {
       Epic subtaskEpic = epics.get(subtasks.get(id).getParentEpicId());
       for (int i = 0; i < subtaskEpic.getSubtasks().size(); i++) {
         if(i == id) subtaskEpic.getSubtasks().remove(i);
+     
       }
       
       subtasks.remove(id);
