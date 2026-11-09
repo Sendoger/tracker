@@ -15,9 +15,7 @@ public class Main {
     manager.addEpic("Великая задача 2", "Без подзадач");
     manager.getTaskById(0);
     System.out.println("\n"+manager.historyList());
-    manager.getTaskById(1);
     System.out.println("\n"+manager.historyList());
-    manager.getTaskById(2);
     System.out.println("\n"+manager.historyList());
     manager.getTaskById(0);
     System.out.println("\n"+manager.historyList());

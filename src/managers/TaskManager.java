@@ -1,16 +1,15 @@
 package tracker.src.managers;
 
 import java.util.*;
-
+import tracker.src.enums.*;
 import tracker.src.tasks.Epic;
 import tracker.src.tasks.Subtask;
 import tracker.src.tasks.Task;
-import tracker.src.tasks.Task.Status;
 
 public interface TaskManager {
-  void addTask(String name, String desc);
-  void addEpic(String name, String desc);
-  void addSubtask(int epicId, String name, String desc);
+  Task addTask(String name, String desc);
+  Epic addEpic(String name, String desc);
+  Subtask addSubtask(int epicId, String name, String desc);
   void updateEpic(int epicId);
   void updateTask(int taskId, Status status);
   void updateSubTask(int subtaskId, Status status);

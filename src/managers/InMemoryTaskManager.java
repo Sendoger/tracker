@@ -1,10 +1,10 @@
 package tracker.src.managers;
 
 import java.util.*;
+import tracker.src.enums.*;
 import tracker.src.tasks.Epic;
 import tracker.src.tasks.Subtask;
 import tracker.src.tasks.Task;
-import tracker.src.tasks.Task.Status;
 
 public class InMemoryTaskManager implements TaskManager{
 
@@ -24,7 +24,7 @@ public class InMemoryTaskManager implements TaskManager{
   }
 
   @Override
-  public void addTask(String name, String desc) {
+  public Task addTask(String name, String desc) {
     Task task = new Task(nextId++, name,desc);
     
     if (!tasks.containsValue(task)) {
@@ -32,20 +32,22 @@ public class InMemoryTaskManager implements TaskManager{
     } else {
       throw new IllegalArgumentException("Задача уже присутствует");
     }
+    return task;
   }
 
   @Override
-  public void addEpic(String name, String desc) {
+  public Epic addEpic(String name, String desc) {
     Epic epic = new Epic(nextId++, name, desc);
     if (!epics.containsValue(epic)) {
       epics.put(epic.getId(), epic); 
     } else {
       throw new IllegalArgumentException("Эпик уже присутствует");
     }
+    return epic;
   }
 
   @Override
-  public void addSubtask(int epicId, String name, String desc) {
+  public Subtask addSubtask(int epicId, String name, String desc) {
     Subtask subtask = new Subtask(nextId++, epicId, name, desc);
     Epic epic = epics.get(epicId);
     if (!subtasks.containsValue(subtask)) {
@@ -62,6 +64,7 @@ public class InMemoryTaskManager implements TaskManager{
     } else {
       throw new IllegalArgumentException("Подзадача уже присутствует");
     }
+    return subtask;
   }
 
   @Override

@@ -1,4 +1,5 @@
 package tracker.src.tasks;
+import tracker.src.enums.*;
 
 public class Subtask extends Task {
   private int parentEpicId = -1;
@@ -8,7 +9,7 @@ public class Subtask extends Task {
     this.parentEpicId = epicId;
   }
   public Subtask(int id, int epicId, String name, String desc, Status status) {
-    super(id, name, desc, status);
+    super(id, name, desc, status, Type.SUBTASK);
     this.parentEpicId = epicId;
   }
   
@@ -18,5 +19,6 @@ public class Subtask extends Task {
   public String toString() {
     return String.format("Подзадача: %s, id: %d, id эпика: %d, описание: %s, статус: %s", getName(), getId(),getParentEpicId(), getDesc(), getStatus());
   }
+
 
 }
