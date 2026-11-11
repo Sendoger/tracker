@@ -5,13 +5,14 @@ public class Subtask extends Task {
   private int parentEpicId = -1;
   
   public Subtask(int id, int epicId, String name, String desc) {
-    super(id, name, desc);
+    super(id, name, desc, Status.NEW, Type.SUBTASK);
     this.parentEpicId = epicId;
   }
   public Subtask(int id, int epicId, String name, String desc, Status status) {
-    super(id, name, desc, status, Type.SUBTASK);
+    super(id, name, desc, status);
     this.parentEpicId = epicId;
   }
+
   
   public int getParentEpicId() { return this.parentEpicId; }
 

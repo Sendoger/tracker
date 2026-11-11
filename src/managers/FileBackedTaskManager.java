@@ -14,8 +14,17 @@ import tracker.src.tasks.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-  String path = "/Users/sendogu/programming/java stuff/tracker/src/saved/filemanageroutput.txt";
-  File file = new File(path);
+  public static void main(String[] args) {
+    FileBackedTaskManager manager = new FileBackedTaskManager(Manager.getDefaultHistory());
+    manager.addTask("676767", "swag");
+    manager.addEpic("epic", "very");
+    manager.addSubtask(1, "subtask", "sub");
+    manager.loadFromFile(file);
+    manager.printAll();
+  }
+
+  private final static String path = "/Users/sendogu/programming/java stuff/tracker/src/saved/filemanageroutput.txt";
+  private final static File file = new File(path);
 
 
   public FileBackedTaskManager(HistoryManager historyImplementation) {
@@ -24,8 +33,39 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
   public void loadFromFile(File file) {
     try {
-      List<String> loadedFile = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
+      List<String> loadedFile = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8); 
+      for (String line : loadedFile) {
+        if (line.isBlank()) break;
+        
+        
+        String[] parsedLine = line.split(",");
 
+        if (parsedLine[0].equals("id")) continue;
+
+        int id = Integer.parseInt(parsedLine[0]);
+      
+        String type = parsedLine[1];
+        switch(type) { //type
+          case "TASK" -> {
+            getTasks().put(id, fromString(parsedLine));  
+          }
+          case "SUBTASK" -> {
+            Subtask subtask = getSubtasks().get(id);
+            Epic epic = getEpics().get(subtask.getId());
+            if (epic != null) {
+              epic.getSubtasks().add(subtask.getId());
+            }
+            getSubtasks().put(id, (Subtask) fromString(parsedLine));
+          }
+          case "EPIC" -> {
+            getEpics().put(id, (Epic) fromString(parsedLine));
+          }
+        }
+      }
+      //id thing
+      setNextId(Integer.parseInt(loadedFile.get(loadedFile.size()-1)));
+      //history thing
+      
     } catch (IOException e) {
       System.out.println("Ошибка при загрузке файла: " + e.getMessage());
     }
@@ -33,41 +73,38 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
   public void save() throws ManagerSaveException {
 
-        // 1. Гарантированно создаем все родительские папки (например, "saved"), если их нет
     if (file.getParentFile() != null && !file.getParentFile().exists()) {
         file.getParentFile().mkdirs();
     }
 
-        // 2. Открываем файл ОДИН раз для записи. 
-        // try-with-resources автоматически закроет файл после завершения блока.
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             
-            // Записываем заголовок один раз в начале файла
-      writer.write("id,type,name,status,desc");
+      writer.write("id,type,name,status,desc,epicId");
       writer.newLine();
 
-            // Записываем все задачи
       for (Task task : getTasks().values()) {
         writer.write(toString(task));
         writer.newLine();
       }
 
-            // Записываем все подзадачи
+      for (Epic epic : getEpics().values()) {
+        writer.write(toString(epic));
+        writer.newLine();
+      }
+
       for (Subtask subtask : getSubtasks().values()) {
         writer.write(toString(subtask));
         writer.newLine();
       }
 
-            // Записываем все эпики
-      for (Epic epic : getEpics().values()) {
-        writer.write(toString(epic));
-        writer.newLine();
-      }
       
-            // Примечание: если по заданию требуется сохранять историю просмотров, 
-            // это обычно делается здесь отдельной строкой после пустой строки.
+            
 
-      writer.write(getNextId());
+      writer.newLine();
+      writer.write("TODO: HISTORY");
+      writer.newLine();
+      writer.newLine();
+      writer.write(String.valueOf(getNextId()));
 
     } catch (IOException e) {
 
@@ -126,14 +163,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                           
   }
 
-  public Task fromTask(String string) {
+  public Task fromString(String[] parsedString) {
     int id;
     String name;
     String desc;
     Status status;
     String type;
     int epicId;
-    String[] parsedString = string.split(",");
 
     Task task;
 
@@ -159,5 +195,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     return task;
   }
+
+  static String toString(HistoryManager manager) {
+
+  }
+  String List<Integer> fromString(String value) {
+    
+  }
+
   
 }

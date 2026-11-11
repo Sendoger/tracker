@@ -10,6 +10,7 @@ public class Main {
     manager.addEpic("epic", "very");
     manager.addSubtask(1, "subtask", "sub");
     //manager.printAll();
+    //с богом
 
 
     //manager.printAll();
