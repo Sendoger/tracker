@@ -1,6 +1,9 @@
 id,type,name,status,desc,epicId
 0,TASK,task1,NEW,desc,-1
+1,TASK,task1,NEW,desc,-1
+2,EPIC,epic1,DONE,desc,-1
+3,SUBTASK,subtask1,DONE,desc,2
 
 history is empty
 
-1
+0

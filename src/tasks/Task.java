@@ -9,25 +9,18 @@ public class Task {
   private final String name;
   private final String desc;
   private Status status;
-  private Type type;
-
-  public Task(int id, String name, String desc, Status status, Type type) {
-    this.name = name;
-    this.desc = desc;
-    this.status = status;
-    this.id = id;
-    this.type = type;
-  }
+  protected Type type;
 
   public Task(int id, String name, String desc, Status status) {
     this.name = name;
     this.desc = desc;
     this.status = status;
     this.id = id;
+    this.type = Type.TASK;
   }
 
   public Task(int id, String name, String desc) {
-    this(id, name, desc, Status.NEW, Type.TASK);
+    this(id, name, desc, Status.NEW);
   }
 
   public int getId() { return id; }
@@ -38,7 +31,7 @@ public class Task {
 
   @Override 
   public String toString() {
-    return String.format(": %s, id: %d, описание: %s, статус: %s", getName(), getId(), getDesc(), getStatus());
+    return String.format("%s: %s, id: %d, описание: %s, статус: %s", getType(), getName(), getId(), getDesc(), getStatus());
   }
   
 }

@@ -18,10 +18,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
   public static void main(String[] args) {
     FileBackedTaskManager manager = new FileBackedTaskManager(Manager.getDefaultHistory());
     manager.loadFromFile(file);
-    manager.addTask("task1", "desc");
-    manager.addEpic("epic1", "desc");
-    manager.addSubtask(1, "subtask1", "desc");
-    manager.getTaskById(0);
+    //manager.addTask("task1", "desc");
+    //manager.addEpic("epic1", "desc");
+    //manager.addSubtask(2, "subtask1", "desc");
+    //manager.updateSubTask(3, Status.DONE);
+    //manager.getTaskById(0);
     manager.printAll();
   }
 
@@ -51,25 +52,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String type = parsedLine[1];
         switch(type) { //type
           case "TASK" -> {
-            getTasks().put(id, fromString(parsedLine)); 
+            getTasks().put(id, fromStringToTask(parsedLine)); 
           }
           case "SUBTASK" -> {
             Epic epic = getEpics().get(epicId);
             if (epic != null) {
               epic.getSubtasks().add(id);
             }
-            getSubtasks().put(id, (Subtask) fromString(parsedLine));
+            getSubtasks().put(id, (Subtask) fromStringToTask(parsedLine));
+            updateEpic(epicId);
           }
           case "EPIC" -> {
-            getEpics().put(id, (Epic) fromString(parsedLine));
+            getEpics().put(id, (Epic) fromStringToTask(parsedLine));
           }
         }
       }
       //id thing
       setNextId(Integer.parseInt(loadedFile.getLast()));
+      
       //history thing
       if (!loadedFile.get(loadedFile.size()-3).equals("history is empty")) {
-        List<Integer> history = fromString(loadedFile.get(loadedFile.size()-3));
+        List<Integer> history = fromStringToList(loadedFile.get(loadedFile.size()-3));
         System.out.println(history);
         for (int taskId : history) {
           
@@ -127,6 +130,38 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
   @Override 
   public void addSubtask(int epicId, String name, String desc) {
     super.addSubtask(epicId, name, desc);
+    try {
+      save();
+    
+    } catch (ManagerSaveException e) {
+      System.out.println("Ошибка при сохранении файла. " + e);
+    }
+  }
+
+  @Override 
+  public void updateSubTask(int subtaskId, Status status) {
+    super.updateSubTask(subtaskId, status);
+    try {
+      save();
+    
+    } catch (ManagerSaveException e) {
+      System.out.println("Ошибка при сохранении файла. " + e);
+    }
+  }
+  @Override 
+  public void updateTask(int taskId, Status status) {
+    super.updateTask(taskId, status);
+    try {
+      save();
+    
+    } catch (ManagerSaveException e) {
+      System.out.println("Ошибка при сохранении файла. " + e);
+    }
+  }
+
+  @Override 
+  public void updateEpic(int epicId) {
+    super.updateEpic(epicId);
     try {
       save();
     
@@ -194,7 +229,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                           
   }
 
-  public Task fromString(String[] parsedString) {
+  public Task fromStringToTask(String[] parsedString) {
     int id;
     String name;
     String desc;
@@ -240,7 +275,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     return res;
   }
 
-  static List<Integer> fromString(String value) {
+  static List<Integer> fromStringToList(String value) {
     String[] parsedString = value.replace("[", "").replace("]","").strip().split(",");
     
     List<Integer> res = new ArrayList<>();
