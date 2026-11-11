@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import tracker.src.enums.*;
 import tracker.src.exceptions.ManagerSaveException;
@@ -16,10 +17,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
   public static void main(String[] args) {
     FileBackedTaskManager manager = new FileBackedTaskManager(Manager.getDefaultHistory());
-    manager.addTask("676767", "swag");
-    manager.addEpic("epic", "very");
-    manager.addSubtask(1, "subtask", "sub");
     manager.loadFromFile(file);
+    manager.addTask("task1", "desc");
+    manager.addEpic("epic1", "desc");
+    manager.addSubtask(1, "subtask1", "desc");
+    manager.getTaskById(0);
     manager.printAll();
   }
 
@@ -31,29 +33,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     super(historyImplementation);
   }
 
-  public void loadFromFile(File file) {
+  public void loadFromFile(File file) {  
     try {
-      List<String> loadedFile = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8); 
+      List<String> loadedFile = Files.readAllLines(Path.of(path), StandardCharsets.UTF_8);
+      if (loadedFile.size() <= 1) return;
       for (String line : loadedFile) {
         if (line.isBlank()) break;
         
         
         String[] parsedLine = line.split(",");
-
+        
         if (parsedLine[0].equals("id")) continue;
 
         int id = Integer.parseInt(parsedLine[0]);
+        int epicId = Integer.parseInt(parsedLine[parsedLine.length-1]);
       
         String type = parsedLine[1];
         switch(type) { //type
           case "TASK" -> {
-            getTasks().put(id, fromString(parsedLine));  
+            getTasks().put(id, fromString(parsedLine)); 
           }
           case "SUBTASK" -> {
-            Subtask subtask = getSubtasks().get(id);
-            Epic epic = getEpics().get(subtask.getId());
+            Epic epic = getEpics().get(epicId);
             if (epic != null) {
-              epic.getSubtasks().add(subtask.getId());
+              epic.getSubtasks().add(id);
             }
             getSubtasks().put(id, (Subtask) fromString(parsedLine));
           }
@@ -63,9 +66,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
       }
       //id thing
-      setNextId(Integer.parseInt(loadedFile.get(loadedFile.size()-1)));
+      setNextId(Integer.parseInt(loadedFile.getLast()));
       //history thing
+      if (!loadedFile.get(loadedFile.size()-3).equals("history is empty")) {
+        List<Integer> history = fromString(loadedFile.get(loadedFile.size()-3));
+        System.out.println(history);
+        for (int taskId : history) {
+          
+          super.getTaskById(taskId);
+        }
+      }
       
+
     } catch (IOException e) {
       System.out.println("Ошибка при загрузке файла: " + e.getMessage());
     }
@@ -101,7 +113,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             
 
       writer.newLine();
-      writer.write("TODO: HISTORY");
+      writer.write(toString(getHistoryManager()));
       writer.newLine();
       writer.newLine();
       writer.write(String.valueOf(getNextId()));
@@ -126,7 +138,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
   @Override 
   public void addTask(String name, String desc) {
     super.addTask(name, desc);
+    try {
+      save();
     
+    } catch (ManagerSaveException e) {
+      System.out.println("Ошибка при сохранении файла. " + e);
+    }
   }
 
   @Override 
@@ -139,6 +156,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
       System.out.println("Ошибка при сохранении файла. " + e);
     }
   }
+
+  @Override 
+  public Task getTaskById(int id) {
+    Task res = super.getTaskById(id);
+    try {
+      save();
+    
+    } catch (ManagerSaveException e) {
+      System.out.println("Ошибка при сохранении файла. " + e);
+    }
+    return res;
+  }
+
+  
 
   public String toString(Task task) {
     
@@ -188,7 +219,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
           task = new Task(id, name, desc, status);
         }
         case "EPIC" -> {
-          task = new Epic(id, name, desc);
+          task = new Epic(id, name, desc, status);
         }
         default -> throw new AssertionError();
     }
@@ -197,10 +228,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
   }
 
   static String toString(HistoryManager manager) {
-
-  }
-  String List<Integer> fromString(String value) {
+    String res = "[";
+    List<Task> history = manager.getHistory();
+    for (Task task : history) {
+      res += String.valueOf(task.getId());
+      if (task != history.get(history.size()-1)) res += ",";
+    }
     
+    res += "]";
+    if (res.equals("[]")) return "history is empty";
+    return res;
+  }
+
+  static List<Integer> fromString(String value) {
+    String[] parsedString = value.replace("[", "").replace("]","").strip().split(",");
+    
+    List<Integer> res = new ArrayList<>();
+    if (!parsedString[0].isBlank()) {
+      for (String num : parsedString) {
+        res.add(Integer.parseInt(num));
+      }
+    }
+    return res;
   }
 
   

@@ -9,7 +9,7 @@ public class Subtask extends Task {
     this.parentEpicId = epicId;
   }
   public Subtask(int id, int epicId, String name, String desc, Status status) {
-    super(id, name, desc, status);
+    super(id, name, desc, status, Type.SUBTASK);
     this.parentEpicId = epicId;
   }
 

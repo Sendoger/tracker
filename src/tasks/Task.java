@@ -38,7 +38,7 @@ public class Task {
 
   @Override 
   public String toString() {
-    return String.format("Задача: %s, id: %d, описание: %s, статус: %s", getName(), getId(), getDesc(), getStatus());
+    return String.format(": %s, id: %d, описание: %s, статус: %s", getName(), getId(), getDesc(), getStatus());
   }
   
 }

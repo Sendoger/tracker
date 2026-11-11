@@ -1,8 +1,6 @@
 id,type,name,status,desc,epicId
-0,TASK,676767,NEW,swag,-1
-2,SUBTASK,subtask,NEW,sub,1
-1,EPIC,epic,NEW,very,-1
+0,TASK,task1,NEW,desc,-1
 
-TODO: HISTORY
+history is empty
 
-3
+1

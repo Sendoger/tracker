@@ -22,6 +22,10 @@ public class InMemoryTaskManager implements TaskManager{
     nextId = id;
   }
 
+  public HistoryManager getHistoryManager() {
+    return history;
+  }
+
   @Override
   public List<Task> historyList() {
     return history.getHistory();
@@ -138,6 +142,7 @@ public class InMemoryTaskManager implements TaskManager{
     System.out.println(getTasks());
     System.out.println(getEpics());
     System.out.println(getSubtasks());
+    System.out.println(historyList());
   }
   @Override
   public void clearTasks(int option) {
