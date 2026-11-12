@@ -17,16 +17,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
   public static void main(String[] args) {
     FileBackedTaskManager manager = new FileBackedTaskManager(Manager.getDefaultHistory());
+    System.out.println("\n");
     manager.loadFromFile(file);
-    //manager.addTask("task1", "desc");
+    //manager.addSubtask(9,"subtask2", "desc");
     //manager.addEpic("epic1", "desc");
-    //manager.addSubtask(2, "subtask1", "desc");
-    //manager.updateSubTask(3, Status.DONE);
-    //manager.getTaskById(0);
+    //manager.addSubtask(3, "subtask1", "desc");
+    //manager.updateSubTask(6, Status.DONE);
+
     manager.printAll();
   }
 
-  private final static String path = "/Users/sendogu/programming/java stuff/tracker/src/saved/filemanageroutput.txt";
+  private final static String path = "/Users/sendogu/programming/java stuff/tracker/src/saved/filemanageroutput.csv";
   private final static File file = new File(path);
 
 
@@ -60,7 +61,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
               epic.getSubtasks().add(id);
             }
             getSubtasks().put(id, (Subtask) fromStringToTask(parsedLine));
-            updateEpic(epicId);
+
           }
           case "EPIC" -> {
             getEpics().put(id, (Epic) fromStringToTask(parsedLine));
@@ -69,13 +70,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
       }
       //id thing
       setNextId(Integer.parseInt(loadedFile.getLast()));
+
+      String historyLine = "history is empty";
       
+      for (int i = loadedFile.size()-1; i >= 0; i--) {
+        if (loadedFile.get(i).startsWith("[")) {
+           historyLine = loadedFile.get(i);
+           break;
+        }
+      }
+
       //history thing
-      if (!loadedFile.get(loadedFile.size()-3).equals("history is empty")) {
-        List<Integer> history = fromStringToList(loadedFile.get(loadedFile.size()-3));
-        System.out.println(history);
+      if (!historyLine.equals("history is empty")) {
+        
+        List<Integer> history = fromStringToList(historyLine.trim());
+        
         for (int taskId : history) {
-          
           super.getTaskById(taskId);
         }
       }
@@ -94,32 +104,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             
-      writer.write("id,type,name,status,desc,epicId");
+      writer.write("id,type,name,status,desc,epicId".trim());
       writer.newLine();
 
       for (Task task : getTasks().values()) {
-        writer.write(toString(task));
+        writer.write(toString(task).trim());
         writer.newLine();
       }
 
       for (Epic epic : getEpics().values()) {
-        writer.write(toString(epic));
+        writer.write(toString(epic).trim());
         writer.newLine();
       }
 
       for (Subtask subtask : getSubtasks().values()) {
-        writer.write(toString(subtask));
+        writer.write(toString(subtask).trim());
         writer.newLine();
       }
-
-      
             
-
       writer.newLine();
-      writer.write(toString(getHistoryManager()));
+      writer.write(toString(getHistoryManager()).trim());
       writer.newLine();
       writer.newLine();
-      writer.write(String.valueOf(getNextId()));
+      writer.write(String.valueOf(getNextId()).trim());
 
     } catch (IOException e) {
 
